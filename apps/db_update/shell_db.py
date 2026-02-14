@@ -54,11 +54,14 @@ def generate_token_bin_file(token_list, chain_list, abi_list, output, db_version
 
   with open(output, 'wb') as f:
     serialize_db(f, m, chains, tokens, abis, db_version, db_h)
+    m_full = m.copy()
     m_hash = m.digest()
     signature = sign(m_hash)
+    m_full.update(signature)
     db_hash = db_h.digest()
+    full_db_hash = m_full.digest()
     f.write(signature)
     
-    db_hashes = {'db_hash': db_hash.hex(), 'full_db_hash': m_hash.hex()}
+    db_hashes = {'db_hash': db_hash.hex(), 'full_db_hash': full_db_hash.hex()}
   
   return db_hashes
